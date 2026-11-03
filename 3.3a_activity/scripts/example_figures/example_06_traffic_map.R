@@ -12,9 +12,9 @@ library(sf)
 
 pine_towns <- read_sf("data/pine_towns.gpkg")
 
-highway_sections <- read_sf("data/highway_sections.gpkg")
+bike_corridors <- read_sf("data/bike_corridors.gpkg")
 
-highway_yearly <- read_csv("data/highway_yearly.csv")
+bike_yearly <- read_csv("data/bike_yearly.csv")
 
 # One colour per section, the same in every example
 section_colours <- c(
@@ -27,15 +27,15 @@ section_colours <- c(
 
 # One Number for Each Line -----------------------------------------------------------------------
 
-highway_2025 <- highway_yearly |>
+bike_2025 <- bike_yearly |>
   filter(year == 2025) |>
-  select(section, vehicles_per_day)
+  select(corridor, bikes_per_day)
 
-sections_2025 <- highway_sections |>
-  left_join(highway_2025, by = "section")
+corridors_2025 <- bike_corridors |>
+  left_join(bike_2025, by = "corridor")
 
-# Expect 4 rows, with vehicles_per_day filled in for every section
-sections_2025
+# Expect 4 rows, with bikes_per_day filled in for every corridor
+corridors_2025
 
 
 # The Figure -------------------------------------------------------------------------------------
@@ -43,13 +43,13 @@ sections_2025
 fig_06 <- ggplot() +
   geom_sf(data = pine_towns, fill = "grey95", colour = "white") +
   geom_sf_text(data = pine_towns, aes(label = town), colour = "grey50") +
-  geom_sf(data = sections_2025, aes(colour = section, linewidth = vehicles_per_day)) +
-  scale_colour_manual(values = section_colours) +
+  geom_sf(data = corridors_2025, aes(colour = corridor, linewidth = bikes_per_day)) +
+  scale_colour_manual(values = corridor_colours) +
   labs(
-    title = "Elm Bridge carries more cars than any other section",
-    subtitle = "Average vehicles per day in 2025. The thicker the line, the more traffic.",
-    colour = "Section",
-    linewidth = "Vehicles per day",
+    title = "College Avenues carries more bikes than any other section",
+    subtitle = "Bike traffic per day in 2025. The thicker the line, the more traffic.",
+    colour = "Corridor",
+    linewidth = "Bikes per day",
     caption = "Made-up data for practice. Pine County does not exist."
   ) +
   theme_void()

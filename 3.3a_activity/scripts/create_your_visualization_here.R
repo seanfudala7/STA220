@@ -12,7 +12,7 @@
 library(tidyverse)
 library(sf)
 
-my_corridor <- "Market Street"           # CHANGE to your group's street (spelled exactly as above)
+my_corridor <- "College Avenue"           # CHANGE to your group's street (spelled exactly as above)
 
 # One colour per street, if you want them
 corridor_colours <- c(
@@ -124,3 +124,34 @@ summary(bike_crashes)
 
 
 # Your Figure ------------------------------------------------------------------------------------
+
+bike_2025 <- bike_yearly |>
+  filter(year == 2025) |>
+  select(corridor, bikes_per_day)
+
+corridors_2025 <- bike_corridors |>
+  left_join(bike_2025, by = "corridor")
+
+# Expect 4 rows, with bikes_per_day filled in for every corridor
+corridors_2025
+
+
+# The Figure -------------------------------------------------------------------------------------
+
+fig_06 <- ggplot() +
+  geom_sf(data = pine_towns, fill = "grey95", colour = "white") +
+  geom_sf_text(data = pine_towns, aes(label = town), colour = "grey50") +
+  geom_sf(data = corridors_2025, aes(colour = corridor, linewidth = bikes_per_day)) +
+  scale_colour_manual(values = corridor_colours) +
+  labs(
+    title = "College Avenues carries more bikes than any other section",
+    subtitle = "Bike traffic per day in 2025. The thicker the line, the more traffic.",
+    colour = "Corridor",
+    linewidth = "Bikes per day",
+    caption = "Made-up data for practice. Pine County does not exist."
+  ) +
+  theme_void()
+
+fig_06
+
+ggsave("output/figures/example_06_traffic_map.png", fig_06, width = 7.5, height = 5.5, bg = "white")
