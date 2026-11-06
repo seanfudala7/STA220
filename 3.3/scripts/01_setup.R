@@ -13,7 +13,6 @@ if (!requireNamespace("tigris", quietly = TRUE)) install.packages("tigris")
 library(tidyverse)
 library(sf)       # maps: a data table with a shape column
 
-
 # Load the Data ----------------------------------------------------------------------------------
 
 # Every town in New Jersey, already downloaded and saved in data/boundaries/
